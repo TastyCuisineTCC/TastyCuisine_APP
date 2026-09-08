@@ -196,7 +196,9 @@ export default function LoginScreen() {
             {loading ? <ActivityIndicator color={C.white} /> : <Text style={styles.primaryButtonText}>Entrar</Text>}
           </TouchableOpacity>
 
-          <View style={styles.dividerContainer}>
+
+          {/* Google button */}
+          {/* <View style={styles.dividerContainer}>
             <View style={styles.line} />
             <Text style={styles.dividerText}>ou continue com</Text>
             <View style={styles.line} />
@@ -205,7 +207,7 @@ export default function LoginScreen() {
           <TouchableOpacity style={styles.googleButton}>
             <Image source={require('../../assets/images/google.png')} style={styles.googleIcon} />
             <Text style={styles.googleText}>Google</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity onPress={() => router.push('/register')} style={styles.registerContainer}>
             <Text style={styles.link}>

@@ -47,7 +47,6 @@ const C = {
 interface UserStats {
   favoritos: number;
   avaliacoes: number;
-  comentarios: number;
 }
 
 // ─── URL base da API ──────────────────────────────────────────────────────────
@@ -55,21 +54,17 @@ const API_BASE = 'http://localhost:8080';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, userId, logout, loading, favoritos, getComentarios, updateUser, EditPhoto } = useAuth();
+  const { user, userId, logout, loading, favoritos, getComentariosByUser, updateUser, EditPhoto } = useAuth();
 
   const [editModalVisible,   setEditModalVisible]   = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleting,     setDeleting]     = useState(false);
   const [saving,       setSaving]       = useState(false);
   const [savingPhoto,  setSavingPhoto]  = useState(false);
-  const [stats,        setStats]        = useState<UserStats>({ favoritos: 0, avaliacoes: 0, comentarios: 0 });
+  const [stats,        setStats]        = useState<UserStats>({ favoritos: 0, avaliacoes: 0});
   const [loadingStats, setLoadingStats] = useState(true);
-  const [birthDate,    setBirthDate]    = useState('');
-
   const [form, setForm] = useState({
     nome_completo:  user?.nome_completo  ?? '',
-    nome_de_usuario: user?.nome_de_usuario ?? '',
-    idade:         String(user?.idade  ?? ''),
     gmail:         user?.gmail         ?? '',
     senha: '',
   });
@@ -85,11 +80,10 @@ export default function ProfileScreen() {
     async function fetchStats() {
       setLoadingStats(true);
       try {
-        const comentarios = await getComentarios(userId!);
+        const comentarios = await getComentariosByUser(userId!);
         setStats({
           favoritos: favoritos.length,
-          avaliacoes: 0,
-          comentarios: comentarios.length,
+          avaliacoes: comentarios.length,
         });
       } finally {
         setLoadingStats(false);
@@ -156,50 +150,22 @@ export default function ProfileScreen() {
       console.log(user)
     setForm({
       nome_completo:   user?.nome_completo   ?? '',
-      nome_de_usuario: user?.nome_de_usuario ?? '',
-      idade:          String(user?.idade   ?? ''),
       gmail:          user?.gmail          ?? '',
       senha: '',
     });
     
     // Se o objeto 'user' tiver o campo da data salva no banco, ele preenche aqui
-    setBirthDate(user?.dataNascimento ?? ''); 
     setEditModalVisible(true);
   };
-  const calculateAge = (dateString: string) => {
-    const parts = dateString.split('/');
-    if (parts.length !== 3) return null;
-    const day = Number(parts[0]);
-    const month = Number(parts[1]);
-    const year = Number(parts[2]);
-
-    if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
-    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900) return null;
-
-    const birth = new Date(year, month - 1, day);
-    if (birth.getDate() !== day || birth.getMonth() !== month - 1 || birth.getFullYear() !== year) {
-      return null;
-    }
-
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    return age;
-  };
+ 
 
   const handleSave = async () => {
     if (!userId) return;
     setSaving(true);
 
-    const idadeCalculada = birthDate ? calculateAge(birthDate) : Number(form.idade);
 
     const payload: any = {
       nome_completo:   form.nome_completo,
-      nome_de_usuario: form.nome_de_usuario,
-      idade:          idadeCalculada ?? user?.idade,
       gmail:          form.gmail,
     };
 
@@ -364,18 +330,6 @@ export default function ProfileScreen() {
                   onChangeText={v => setForm(f => ({ ...f, nome_completo: v }))}
                   placeholder="Seu nome completo"
                   placeholderTextColor={C.textMuted}
-                />
-              </View>
-
-              <View style={s.fieldGroup}>
-                <Text style={s.fieldLabel}>Nome de usuário</Text>
-                <TextInput
-                  style={s.fieldInput}
-                  value={form.nome_de_usuario}
-                  onChangeText={v => setForm(f => ({ ...f, nome_de_usuario: v }))}
-                  placeholder="nome_de_usuario"
-                  placeholderTextColor={C.textMuted}
-                  autoCapitalize="none"
                 />
               </View>
 

@@ -51,7 +51,8 @@ interface AuthContextType {
   register: (nome_completo: string, idade: Date, gmail: string, senha: string) => Promise<{ ok: boolean; error?: string }>;
   updateUserData: (user: AuthUser) => void;
   getComentarios: (receitaId: string) => Promise<any[]>;
-  enviarComentario: (receitaId: number, nota: number, texto: string) => Promise<void>;
+  getComentariosByUser: (userId: string) => Promise<any[]>;
+  enviarComentario: (receitaId: number, nota: number) => Promise<void>;
   toggleFavorito: (receitaId: string, codReceitas: number) => Promise<void>;
   login: (email: string, senha: string) => Promise<{ ok: boolean; error?: string }>;
   alterarStatus: (usuarioId: number) => Promise<void>;
@@ -215,13 +216,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  async function enviarComentario(receitaId: number, nota: number, texto: string) {
+  
+
+  async function getComentariosByUser(userId: string) {
+    try {
+      const resposta = await comentariosAPI.getAll()
+      if (resposta.status === 200 && Array.isArray(resposta.data)) {
+        let comentarios = resposta.data as any[];
+        console.log(comentarios)
+        comentarios = comentarios.filter((comentario: any) => comentario.statusComentarios === 'ATIVO')
+        .filter((comentario: any) => comentario.usuario.codUser.toString() === userId);
+        console.log(comentarios)
+        return comentarios
+      }
+      return [];
+    } catch (error) {
+      console.error("Erro ao buscar comentários:", error);
+      return []; 
+    }
+  }
+
+  async function enviarComentario(receitaId: number, nota: number) {
     if (!user) return;
     await comentariosAPI.create({
       usuario: { codUser: Number(user.codUser) },
       receita: { codReceitas: receitaId },
       nota,
-      texto,
       status_comentarios: 'ATIVO'
     });
   }
@@ -367,6 +387,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       getBookbyUserId,
       register,
       getComentarios,
+      getComentariosByUser,
       enviarComentario,
       updateUserData,
       updateUser,

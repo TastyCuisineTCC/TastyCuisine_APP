@@ -244,7 +244,8 @@ export default function RegisterScreen() {
             {loading ? <ActivityIndicator color={C.white} /> : <Text style={styles.primaryButtonText}>Criar Conta</Text>}
           </TouchableOpacity>
 
-          <View style={styles.dividerContainer}>
+          {/* Google Button */}
+          {/* <View style={styles.dividerContainer}>
             <View style={styles.line} />
             <Text style={styles.dividerText}>ou continue com</Text>
             <View style={styles.line} />
@@ -253,7 +254,7 @@ export default function RegisterScreen() {
           <TouchableOpacity style={styles.googleButton}>
             <Image source={require('../../assets/images/google.png')} style={styles.googleIcon} />
             <Text style={styles.googleText}>Google</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity onPress={() => router.push('/login')} style={styles.loginLinkContainer}>
             <Text style={styles.link}>

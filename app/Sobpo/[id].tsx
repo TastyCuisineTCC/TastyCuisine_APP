@@ -11,7 +11,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -63,9 +62,9 @@ export default function DishDetailScreen() {
 
   const [servings, setServings] = useState(1);
   const [rating, setRating] = useState(0);
-  const [commentText, setCommentText] = useState('');
   const [sending, setSending] = useState(false);
   const [comentarios, setComentarios] = useState<any[]>([]);
+  const [jaAvaliou, setJaAvaliou] = useState(false);
 
   const recipe = recipes.find(r => String(r.codReceitas ?? r.id) === String(id));
   const fav = favoritos.find(f => String(f.receita?.codReceitas) === String(id));
@@ -76,8 +75,16 @@ export default function DishDetailScreen() {
   }, [loading]);
 
   useEffect(() => {
-    getComentarios(String(id)).then(setComentarios);
-  }, [id]);
+    getComentarios(String(id)).then((listaComentarios: any[]) => {
+      setComentarios(listaComentarios);
+      if (userId && Array.isArray(listaComentarios)) {
+        const usuarioJaAvaliou = listaComentarios.some(
+          c => String(String(c.usuario.codUser)) === String(userId)
+        );
+        setJaAvaliou(usuarioJaAvaliou);
+      }
+    });
+  }, [id, userId]);
 
   const handleToggleFavorito = async () => {
     await toggleFavorito(String(id), Number(id));
@@ -87,16 +94,17 @@ export default function DishDetailScreen() {
     if (!userId) { Alert.alert('Atenção', 'Você precisa estar logado para avaliar.'); return; }
     if (rating === 0) { Alert.alert('Atenção', 'Selecione uma nota de 1 a 5.'); return; }
     setSending(true);
-    await enviarComentario(Number(id), rating, commentText.trim());
+    await enviarComentario(Number(id), rating);
     setSending(false);
+    
     const atualizados = await getComentarios(String(id));
     setComentarios(atualizados);
+    setJaAvaliou(true);
+    
     Alert.alert('Obrigado!', 'Avaliação enviada com sucesso.');
     setRating(0);
-    setCommentText('');
   };
 
-  // ─── ESTILOS TOTALMENTE UNIFICADOS COM COLORS.JS (C) ────────────────────────
   const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: C.bg },
     header: { position: 'absolute', top: 50, left: 20, right: 20, zIndex: 10, flexDirection: 'row', justifyContent: 'space-between' },
@@ -120,10 +128,10 @@ export default function DishDetailScreen() {
     stepText: { flex: 1, color: C.textPrimary, fontSize: 15, lineHeight: 24 },
     ratingBox: { backgroundColor: C.surface, padding: 20, borderRadius: 20, marginTop: 20, borderWidth: 0.5, borderColor: C.accentBorder },
     starsRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: 15 },
-    input: { backgroundColor: C.bg, borderRadius: 12, padding: 15, color: C.textPrimary, minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: C.accentBorder, marginBottom: 10 },
     sendBtn: { backgroundColor: C.hero, padding: 15, borderRadius: 12, alignItems: 'center' },
     sendBtnDisabled: { backgroundColor: C.surfaceHi, opacity: 0.7 },
     sendBtnText: { color: C.textOnHero, fontWeight: 'bold' },
+    alreadyEvaluatedText: { color: C.textSub, fontSize: 16, textAlign: 'center', fontWeight: 'bold' },
     commentItem: { paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: C.accentBorder },
     commentHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
     commentUser: { fontWeight: 'bold', color: C.textPrimary, fontSize: 14 },
@@ -239,36 +247,32 @@ export default function DishDetailScreen() {
 
             <Text style={styles.sectionTitle}>Avalie esta receita</Text>
             <View style={styles.ratingBox}>
-              <Text style={{ color: C.textPrimary, textAlign: 'center', marginBottom: 10, fontWeight: 'bold' }}>O que achou?</Text>
-              <View style={styles.starsRow}>
-                {[1, 2, 3, 4, 5].map(s => (
-                  <TouchableOpacity key={s} onPress={() => setRating(s)}>
-                    <Ionicons name={s <= rating ? 'star' : 'star-outline'} size={32} color={s <= rating ? '#FFD700' : C.textMuted} style={{ marginHorizontal: 5 }} />
+              {jaAvaliou ? (
+                <Text style={styles.alreadyEvaluatedText}>Já avaliou essa receita</Text>
+              ) : (
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                  <Text style={{ color: C.textPrimary, textAlign: 'center', marginBottom: 10, fontWeight: 'bold' }}>O que achou?</Text>
+                  <View style={styles.starsRow}>
+                    {[1, 2, 3, 4, 5].map(s => (
+                      <TouchableOpacity key={s} onPress={() => setRating(s)}>
+                        <Ionicons name={s <= rating ? 'star' : 'star-outline'} size={32} color={s <= rating ? '#FFD700' : C.textMuted} style={{ marginHorizontal: 5 }} />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                  <TouchableOpacity
+                    style={[styles.sendBtn, (rating === 0 || sending) && styles.sendBtnDisabled]}
+                    onPress={handleEnviarAvaliacao}
+                    disabled={rating === 0 || sending}
+                  >
+                    {sending ? <ActivityIndicator color={C.white} /> : <Text style={styles.sendBtnText}>Enviar Avaliação</Text>}
                   </TouchableOpacity>
-                ))}
-              </View>
-              <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Escreva seu comentário..."
-                  placeholderTextColor={C.textMuted}
-                  multiline
-                  value={commentText}
-                  onChangeText={setCommentText}
-                />  
-                <TouchableOpacity
-                  style={[styles.sendBtn, (rating === 0 || commentText.trim() === '' || sending) && styles.sendBtnDisabled]}
-                  onPress={handleEnviarAvaliacao}
-                  disabled={rating === 0 || commentText.trim() === '' || sending}
-                >
-                  {sending ? <ActivityIndicator color={C.white} /> : <Text style={styles.sendBtnText}>Enviar Avaliação</Text>}
-                </TouchableOpacity>
-              </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+              )}
             </View>
 
-            <Text style={styles.sectionTitle}>Comentários</Text>
+            <Text style={styles.sectionTitle}>Avaliações</Text>
             {comentarios.length === 0 ? (
-              <Text style={{ color: C.textMuted, marginBottom: 20 }}>Nenhum comentário ainda. Seja o primeiro!</Text>
+              <Text style={{ color: C.textMuted, marginBottom: 20 }}>Nenhuma avaliação ainda. Seja o primeiro!</Text>
             ) : (
               comentarios.map((c, i) => (
                 <View key={i} style={styles.commentItem}>
@@ -279,7 +283,7 @@ export default function DishDetailScreen() {
                     </View>
                     <Text style={styles.commentDate}>{formatDate(c.data_Comentario)}</Text>
                   </View>
-                  <Text style={styles.commentText}>{str(c.texto)}</Text>
+                  {c.texto ? <Text style={styles.commentText}>{str(c.texto)}</Text> : null}
                 </View>
               ))
             )}
