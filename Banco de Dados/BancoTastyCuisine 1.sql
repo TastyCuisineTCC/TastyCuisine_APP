@@ -114,9 +114,29 @@ INSERT INTO Categorias (Nome_Categoria, Grupo) VALUES
   ('Fitness e Saud�vel', 'neutro'),
   ('Molhos e Acompanhamentos', 'neutro');
 
+  
+INSERT INTO Usuario (Nome_completo, Gmail, Idade, Senha, Funcao, Foto_perfil, Bloqueado)
+VALUES 
+('Erick Jacquin', 'jacquin@tastycuisine.com', '1964/12/09', 'senha123', 'Chefe', 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400', 0),
+('Helena Rizzo', 'helena@tastycuisine.com', '1978/05/22', 'senha123', 'Chefe', 'https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=400', 0),
+('Paola Carosella', 'paola@tastycuisine.com', '1972/10/30', 'senha123', 'Chefe', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400', 0)
 
-insert into Usuario(Nome_completo,Idade,Gmail,Senha,Restricoes_alimentares,funcao)
-VALUES('eu','2000/08/20','gmail@gmail.com','123456','[]','Usuario')
+
+--#region Inserção de Usuários Comuns (IDs 4 a 13)
+INSERT INTO Usuario (Nome_completo, Idade, Gmail, Senha, Restricoes_alimentares, funcao) 
+VALUES
+('Carlos Eduardo', '1995/03/10', 'carlos@gmail.com', '123456', '[]', 'Usuario'),
+('Mariana Silva', '1998/07/25', 'mariana@gmail.com', '123456', '[]', 'Usuario'),
+('Lucas Mendes', '2001/11/12', 'lucas@gmail.com', '123456', '[]', 'Usuario'),
+('Fernanda Costa', '1992/05/18', 'fernanda@gmail.com', '123456', '[]', 'Usuario'),
+('Rafael Oliveira', '1990/09/01', 'rafael@gmail.com', '123456', '[]', 'Usuario'),
+('Beatriz Lima', '2003/02/14', 'beatriz@gmail.com', '123456', '[]', 'Usuario'),
+('Gabriel Santos', '1997/12/30', 'gabriel@gmail.com', '123456', '[]', 'Usuario'),
+('Juliana Rocha', '1994/08/08', 'juliana@gmail.com', '123456', '[]', 'Usuario'),
+('Thiago Martins', '1989/04/05', 'thiago@gmail.com', '123456', '[]', 'Usuario'),
+('Camila Alves', '2000/10/20', 'camila@gmail.com', '123456', '[]', 'Usuario');
+--#endregion
+
 
 --#region Inserção de Receitas.
 INSERT INTO receitas (
@@ -129,85 +149,85 @@ INSERT INTO receitas (
     Restricao, 
     Status_Receita,
     TempoPreparo) VALUES 
-('Bolo de Cenoura', 'Cl�ssico bolo de cenoura fofinho com cobertura de chocolate.', 
- '["Bata as cenouras, ovos e �leo no liquidificador", "Misture a farinha e o a��car em uma tigela", "Junte as misturas e adicione o fermento", "Asse em forno preaquecido a 180�C por 40 min", "Fa�a a calda de chocolate e cubra o bolo"]', 
- '[{"nome": "Cenoura", "quantidade": "3", "unidade": "unidades"}, {"nome": "Ovo", "quantidade": "3", "unidade": "unidades"}, {"nome": "�leo", "quantidade": "1/2", "unidade": "x�cara"}, {"nome": "A��car", "quantidade": "2", "unidade": "x�caras"}, {"nome": "Farinha de Trigo", "quantidade": "2.5", "unidade": "x�caras"}, {"nome": "Fermento em p�", "quantidade": "1", "unidade": "colher de sopa"}]', 
- 1, NULL, 15, 'ATIVO', 'Demorado'),
+(N'Bolo de Cenoura', N'Clássico bolo de cenoura fofinho com cobertura de chocolate.', 
+ '["Bata as cenouras, ovos e óleo no liquidificador", "Misture a farinha e o açúcar em uma tigela", "Junte as misturas e adicione o fermento", "Asse em forno preaquecido a 180°C por 40 min", "Faça a calda de chocolate e cubra o bolo"]', 
+ '[{"nome": "Cenoura", "quantidade": "3", "unidade": "unidades"}, {"nome": "Ovo", "quantidade": "3", "unidade": "unidades"}, {"nome": "Óleo", "quantidade": "1/2", "unidade": "xícara"}, {"nome": "Açúcar", "quantidade": "2", "unidade": "xícaras"}, {"nome": "Farinha de Trigo", "quantidade": "2.5", "unidade": "xícaras"}, {"nome": "Fermento em pó", "quantidade": "1", "unidade": "colher de sopa"}]', 
+ 1, NULL, 15, N'ATIVO', N'Demorado'),
 
-('Panqueca de Banana', 'Panqueca pr�tica de 2 ingredientes para o caf� da manh�.', 
- '["Amasse bem a banana em um prato", "Misture o ovo batido com a banana", "Aque�a uma frigideira antiaderente untada", "Pingue por��es da massa e doure dos dois lados"]', 
- '[{"nome": "Banana madura", "quantidade": "1", "unidade": "unidade"}, {"nome": "Ovo", "quantidade": "1", "unidade": "unidade"}, {"nome": "Canela em p�", "quantidade": "1", "unidade": "pitada"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+(N'Panqueca de Banana', N'Panqueca prática de 2 ingredientes para o café da manhã.', 
+ '["Amasse bem a banana em um prato", "Misture o ovo batido com a banana", "Aqueça uma frigideira antiaderente untada", "Pingue porções da massa e doure dos dois lados"]', 
+ '[{"nome": "Banana madura", "quantidade": "1", "unidade": "unidade"}, {"nome": "Ovo", "quantidade": "1", "unidade": "unidade"}, {"nome": "Canela em pó", "quantidade": "1", "unidade": "pitada"}]', 
+ 2, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Omelete de Queijo e Tomate', 'Omelete cremosa ideal para uma refei��o r�pida.', 
+(N'Omelete de Queijo e Tomate', N'Omelete cremosa ideal para uma refeição rápida.', 
  '["Bata os ovos com sal e pimenta em uma tigela", "Despeje na frigideira aquecida em fogo baixo", "Adicione o queijo e o tomate picados de um lado", "Dobre ao meio e espere o queijo derreter"]', 
- '[{"nome": "Ovo", "quantidade": "2", "unidade": "unidades"}, {"nome": "Queijo Mu�arela", "quantidade": "50", "unidade": "gramas"}, {"nome": "Tomate", "quantidade": "1/2", "unidade": "unidade"}, {"nome": "Sal", "quantidade": "1", "unidade": "pitada"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+ '[{"nome": "Ovo", "quantidade": "2", "unidade": "unidades"}, {"nome": "Queijo Muçarela", "quantidade": "50", "unidade": "gramas"}, {"nome": "Tomate", "quantidade": "1/2", "unidade": "unidade"}, {"nome": "Sal", "quantidade": "1", "unidade": "pitada"}]', 
+ 3, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Salada Ceasar Simples', 'Salada leve com molho caseiro e tiras de frango.', 
- '["Grelhe o peito de frango temperado e corte em tiras", "Lave e corte o alface-americana", "Misture a maionese com o lim�o e o queijo ralado para o molho", "Monte a salada juntando o alface, o frango, os croutons e o molho"]', 
- '[{"nome": "Alface-americana", "quantidade": "1", "unidade": "ma�o"}, {"nome": "Peito de Frango", "quantidade": "200", "unidade": "gramas"}, {"nome": "Croutons", "quantidade": "50", "unidade": "gramas"}, {"nome": "Queijo Parmes�o", "quantidade": "30", "unidade": "gramas"}]', 
- 1, NULL, 15, 'ATIVO', 'Mediano'),
+(N'Salada Ceasar Simples', N'Salada leve com molho caseiro e tiras de frango.', 
+ '["Grelhe o peito de frango temperado e corte em tiras", "Lave e corte o alface-americana", "Misture a maionese com o limão e o queijo ralado para o molho", "Monte a salada juntando o alface, o frango, os croutons e o molho"]', 
+ '[{"nome": "Alface-americana", "quantidade": "1", "unidade": "maço"}, {"nome": "Peito de Frango", "quantidade": "200", "unidade": "gramas"}, {"nome": "Croutons", "quantidade": "50", "unidade": "gramas"}, {"nome": "Queijo Parmesão", "quantidade": "30", "unidade": "gramas"}]', 
+ 1, NULL, 15, N'ATIVO', N'Mediano'),
 
-('Sopa de Legumes', 'Sopa reconfortante de legumes variados.', 
- '["Descasque e corte todos os legumes em cubos pequenos", "Refogue a cebola e o alho em uma panela grande", "Adicione os legumes e cubra com �gua", "Cozinhe at� ficarem macios e ajuste o sal"]', 
+(N'Sopa de Legumes', N'Sopa reconfortante de legumes variados.', 
+ '["Descasque e corte todos os legumes em cubos pequenos", "Refogue a cebola e o alho em uma panela grande", "Adicione os legumes e cubra com água", "Cozinhe até ficarem macios e ajuste o sal"]', 
  '[{"nome": "Batata", "quantidade": "2", "unidade": "unidades"}, {"nome": "Cenoura", "quantidade": "1", "unidade": "unidade"}, {"nome": "Chuchu", "quantidade": "1", "unidade": "unidade"}, {"nome": "Cebola", "quantidade": "1/2", "unidade": "unidade"}]', 
- 1, NULL, 15, 'ATIVO', 'Mediano'),
+ 2, NULL, 15, N'ATIVO', N'Mediano'),
 
-('Vitamina de Morango', 'Bebida r�pida e refrescante para a tarde.', 
- '["Lave bem os morangos e retire as folhas", "Adicione os morangos, o leite e o mel no liquidificador", "Bata por 2 minutos at� ficar homog�neo", "Sirva bem gelado"]', 
+(N'Vitamina de Morango', N'Bebida rápida e refrescante para a tarde.', 
+ '["Lave bem os morangos e retire as folhas", "Adicione os morangos, o leite e o mel no liquidificador", "Bata por 2 minutos até ficar homogêneo", "Sirva bem gelado"]', 
  '[{"nome": "Morango", "quantidade": "10", "unidade": "unidades"}, {"nome": "Leite", "quantidade": "250", "unidade": "ml"}, {"nome": "Mel", "quantidade": "1", "unidade": "colher de sopa"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+ 3, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Escondidinho de Carne Mo�da', 'Prato tradicional com pur� de batata e recheio suculento.', 
- '["Cozinhe as batatas e amasse-as fazendo um pur� leve", "Refogue a carne mo�da com alho, cebola e temperos a gosto", "Em um refrat�rio, fa�a uma camada de pur�, depois a carne e cubra com o restante do pur�", "Finalize com queijo ralado e leve ao forno para gratinar"]', 
- '[{"nome": "Carne Mo�da", "quantidade": "400", "unidade": "gramas"}, {"nome": "Batata", "quantidade": "6", "unidade": "unidades"}, {"nome": "Queijo Mu�arela", "quantidade": "100", "unidade": "gramas"}, {"nome": "Manteiga", "quantidade": "1", "unidade": "colher de sopa"}]', 
- 1, NULL, 15, 'ATIVO', 'Demorado'),
+(N'Escondidinho de Carne Moída', N'Prato tradicional com purê de batata e recheio suculento.', 
+ '["Cozinhe as batatas e amasse-as fazendo um purê leve", "Refogue a carne moída com alho, cebola e temperos a gosto", "Em um refratário, faça uma camada de purê, depois a carne e cubra com o restante do purê", "Finalize com queijo ralado e leve ao forno para gratinar"]', 
+ '[{"nome": "Carne Moída", "quantidade": "400", "unidade": "gramas"}, {"nome": "Batata", "quantidade": "6", "unidade": "unidades"}, {"nome": "Queijo Muçarela", "quantidade": "100", "unidade": "gramas"}, {"nome": "Manteiga", "quantidade": "1", "unidade": "colher de sopa"}]', 
+ 1, NULL, 15, N'ATIVO', N'Demorado'),
 
-('Macarr�o ao Alho e �leo', 'Massa r�pida e cheia de sabor com alho dourado.', 
- '["Cozinhe o macarr�o em �gua fervente com sal at� ficar al dente", "Em uma frigideira, doure o alho laminado no azeite", "Junte o macarr�o escorrido na frigideira e misture bem", "Polvilhe cheiro-verde picado antes de servir"]', 
- '[{"nome": "Macarr�o Spaghetti", "quantidade": "250", "unidade": "gramas"}, {"nome": "Alho", "quantidade": "4", "unidade": "dentes"}, {"nome": "Azeite de Oliva", "quantidade": "3", "unidade": "colheres de sopa"}, {"nome": "Sal", "quantidade": "1", "unidade": "colher de ch�"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+(N'Macarrão ao Alho e Óleo', N'Massa rápida e cheia de sabor com alho dourado.', 
+ '["Cozinhe o macarrão em água fervente com sal até ficar al dente", "Em uma frigideira, doure o alho laminado no azeite", "Junte o macarrão escorrido na frigideira e misture bem", "Polvilhe cheiro-verde picado antes de servir"]', 
+ '[{"nome": "Macarrão Spaghetti", "quantidade": "250", "unidade": "gramas"}, {"nome": "Alho", "quantidade": "4", "unidade": "dentes"}, {"nome": "Azeite de Oliva", "quantidade": "3", "unidade": "colheres de sopa"}, {"nome": "Sal", "quantidade": "1", "unidade": "colher de chá"}]', 
+ 2, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Crepioca de Frango', 'Op��o saud�vel e proteica para o jantar.', 
- '["Bata a goma de tapioca com o ovo at� misturar bem", "Despeje em uma frigideira aquecida e cozinhe os dois lados", "Recheie com o frango desfiado temperado", "Dobre ao meio e sirva quente"]', 
+(N'Crepioca de Frango', N'Opção saudável e proteica para o jantar.', 
+ '["Bata a goma de tapioca com o ovo até misturar bem", "Despeje em uma frigideira aquecida e cozinhe os dois lados", "Recheie com o frango desfiado temperado", "Dobre ao meio e sirva quente"]', 
  '[{"nome": "Goma de Tapioca", "quantidade": "2", "unidade": "colheres de sopa"}, {"nome": "Ovo", "quantidade": "1", "unidade": "unidade"}, {"nome": "Frango desfiado", "quantidade": "3", "unidade": "colheres de sopa"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+ 3, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Mousse de Maracuj�', 'Sobremesa cremosa com apenas 3 ingredientes.', 
- '["Bata o leite condensado, o creme de leite e o suco concentrado de maracuj� no liquidificador por 3 minutos", "Despeje em ta�as individuais ou em um refrat�rio", "Leve � geladeira por pelo menos 3 horas antes de servir"]', 
- '[{"nome": "Leite Condensado", "quantidade": "1", "unidade": "lata"}, {"nome": "Creme de Leite", "quantidade": "1", "unidade": "caixinha"}, {"nome": "Suco concentrado de maracuj�", "quantidade": "200", "unidade": "ml"}]', 
- 1, NULL, 15, 'ATIVO', 'Mediano'),
+(N'Mousse de Maracujá', N'Sobremesa cremosa com apenas 3 ingredientes.', 
+ '["Bata o leite condensado, o creme de leite e o suco concentrado de maracujá no liquidificador por 3 minutos", "Despeje em taças individuais ou em um refratário", "Leve à geladeira por pelo menos 3 horas antes de servir"]', 
+ '[{"nome": "Leite Condensado", "quantidade": "1", "unidade": "lata"}, {"nome": "Creme de Leite", "quantidade": "1", "unidade": "caixinha"}, {"nome": "Suco concentrado de maracujá", "quantidade": "200", "unidade": "ml"}]', 
+ 1, NULL, 15, N'ATIVO', N'Mediano'),
 
-('Guacamole Tradicional', 'Acompanhamento mexicano fresco e pr�tico.', 
- '["Amasse o abacate com um garfo deixando alguns peda�os", "Misture o tomate, a cebola e o coentro bem picados", "Tempere com o suco de lim�o, azeite e sal", "Misture delicadamente e sirva com tortillas"]', 
- '[{"nome": "Abacate", "quantidade": "1", "unidade": "unidade"}, {"nome": "Tomate", "quantidade": "1", "unidade": "unidade"}, {"nome": "Cebola Roxa", "quantidade": "1/2", "unidade": "unidade"}, {"nome": "Lim�o", "quantidade": "1", "unidade": "unidade"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+(N'Guacamole Tradicional', N'Acompanhamento mexicano fresco e prático.', 
+ '["Amasse o abacate com um garfo deixando alguns pedaços", "Misture o tomate, a cebola e o coentro bem picados", "Tempere com o suco de limão, azeite e sal", "Misture delicadamente e sirva com tortillas"]', 
+ '[{"nome": "Abacate", "quantidade": "1", "unidade": "unidade"}, {"nome": "Tomate", "quantidade": "1", "unidade": "unidade"}, {"nome": "Cebola Roxa", "quantidade": "1/2", "unidade": "unidade"}, {"nome": "Limão", "quantidade": "1", "unidade": "unidade"}]', 
+ 2, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Misto Quente de Frigideira', 'Lanche cl�ssico para qualquer hora do dia.', 
- '["Passe manteiga do lado de fora das fatias de p�o", "Monte o lanche com uma fatia de queijo e uma de presunto", "Coloque na frigideira aquecida em fogo baixo", "Vire quando estiver dourado e espere o queijo derreter"]', 
- '[{"nome": "P�o de Forma", "quantidade": "2", "unidade": "fatias"}, {"nome": "Queijo Mu�arela", "quantidade": "1", "unidade": "fatia"}, {"nome": "Presunto", "quantidade": "1", "unidade": "fatia"}, {"nome": "Manteiga", "quantidade": "1", "unidade": "colher de ch�"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+(N'Misto Quente de Frigideira', N'Lanche clássico para qualquer hora do dia.', 
+ '["Passe manteiga do lado de fora das fatias de pão", "Monte o lanche com uma fatia de queijo e uma de presunto", "Coloque na frigideira aquecida em fogo baixo", "Vire quando estiver dourado e espere o queijo derreter"]', 
+ '[{"nome": "Pão de Forma", "quantidade": "2", "unidade": "fatias"}, {"nome": "Queijo Muçarela", "quantidade": "1", "unidade": "fatia"}, {"nome": "Presunto", "quantidade": "1", "unidade": "fatia"}, {"nome": "Manteiga", "quantidade": "1", "unidade": "colher de chá"}]', 
+ 3, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Batata Saut�', 'Acompanhamento leve de batatas douradas na manteiga.', 
- '["Cozinhe as batatas cortadas em cubos grandes at� ficarem al dente", "Derreta a manteiga em uma frigideira larga", "Adicione as batatas escorridas e doure mexendo ocasionalmente", "Finalize com salsa picada e sal"]', 
+(N'Batata Sauté', N'Acompanhamento leve de batatas douradas na manteiga.', 
+ '["Cozinhe as batatas cortadas em cubos grandes até ficarem al dente", "Derreta a manteiga em uma frigideira larga", "Adicione as batatas escorridas e doure mexendo ocasionalmente", "Finalize com salsa picada e sal"]', 
  '[{"nome": "Batata", "quantidade": "4", "unidade": "unidades"}, {"nome": "Manteiga", "quantidade": "2", "unidade": "colheres de sopa"}, {"nome": "Salsinha", "quantidade": "1", "unidade": "colher de sopa"}, {"nome": "Sal", "quantidade": "1", "unidade": "pitada"}]', 
- 1, NULL, 15, 'ATIVO', 'Mediano'),
+ 1, NULL, 15, N'ATIVO', N'Mediano'),
 
-('Smoothie de Banana e Cacau', 'Bebida cremosa perfeita para o pr�-treino.', 
- '["Descasque a banana e congele na v�spera", "Bata no liquidificador a banana congelada com o leite e o cacau", "Adicione a aveia e bata at� ficar cremoso", "Sirva imediatamente"]', 
- '[{"nome": "Banana", "quantidade": "1", "unidade": "unidade"}, {"nome": "Leite", "quantidade": "200", "unidade": "ml"}, {"nome": "Cacau em p� 100%", "quantidade": "1", "unidade": "colher de sopa"}, {"nome": "Aveia em flocos", "quantidade": "1", "unidade": "colher de sopa"}]', 
- 1, NULL, 15, 'ATIVO', 'R�pido'),
+(N'Smoothie de Banana e Cacau', N'Bebida cremosa perfeita para o pré-treino.', 
+ '["Descasque a banana e congele na véspera", "Bata no liquidificador a banana congelada com o leite e o cacau", "Adicione a aveia e bata até ficar cremoso", "Sirva imediatamente"]', 
+ '[{"nome": "Banana", "quantidade": "1", "unidade": "unidade"}, {"nome": "Leite", "quantidade": "200", "unidade": "ml"}, {"nome": "Cacau em pó 100%", "quantidade": "1", "unidade": "colher de sopa"}, {"nome": "Aveia em flocos", "quantidade": "1", "unidade": "colher de sopa"}]', 
+ 2, NULL, 15, N'ATIVO', N'Rápido'),
 
-('Arroz de Forno Cremoso', 'Receita para aproveitar o arroz do dia anterior.', 
- '["Misture o arroz cozido com o requeij�o e o milho", "Em um refrat�rio, alterne camadas de arroz, presunto e queijo", "Cubra a �ltima camada com queijo e polvilhe or�gano", "Leve ao forno a 200�C por 15 minutos at� gratinar"]', 
- '[{"nome": "Arroz cozido", "quantidade": "3", "unidade": "x�caras"}, {"nome": "Requeij�o Cremoso", "quantidade": "200", "unidade": "gramas"}, {"nome": "Milho verde", "quantidade": "1/2", "unidade": "lata"}, {"nome": "Queijo Mu�arela", "quantidade": "150", "unidade": "gramas"}]', 
- 1, NULL, 15, 'ATIVO', 'Mediano');
+(N'Arroz de Forno Cremoso', N'Receita para aproveitar o arroz do dia anterior.', 
+ '["Misture o arroz cozido com o requeijão e o milho", "Em um refratário, alterne camadas de arroz, presunto e queijo", "Cubra a última camada com queijo e polvilhe orégano", "Leve ao forno a 200°C por 15 minutos até gratinar"]', 
+ '[{"nome": "Arroz cozido", "quantidade": "3", "unidade": "xícaras"}, {"nome": "Requeijão Cremoso", "quantidade": "200", "unidade": "gramas"}, {"nome": "Milho verde", "quantidade": "1/2", "unidade": "lata"}, {"nome": "Queijo Muçarela", "quantidade": "150", "unidade": "gramas"}]', 
+ 3, NULL, 15, N'ATIVO', N'Mediano');
 
 -- Atualiza��o das URLs das fotos de cada receita no SQL Server
 
 
-  -- Bolo de Cenoura
+    -- Bolo de Cenoura
 UPDATE Receitas SET Foto_receita = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb4toMJH3wDa2QU6jxj-ZTTxWabCZAdMfZprJQmS3jnA&s=10' WHERE Cod_receitas = 1;
 
   -- Panqueca de Banana
@@ -228,13 +248,13 @@ UPDATE Receitas SET Foto_receita = 'https://guiadacozinha.com.br/wp-content/uplo
   -- Escondidinho
 UPDATE Receitas SET Foto_receita = 'https://www.receitasja.com.br/wp-content/uploads/2025/06/Escondidinho-de-carne-moida-com-mandioca-500x500.jpg' WHERE Cod_receitas = 7;
 
-  -- Macarr�o ao Alho e �leo
+  -- Macarrão ao Alho e Óleo
 UPDATE Receitas SET Foto_receita = 'https://static.itdg.com.br/images/1200-630/b738131b402ba33d58befa56415ba106/324571-original.jpg' WHERE Cod_receitas = 8;
 
   -- Crepioca de Frango
 UPDATE Receitas SET Foto_receita = 'https://www.sadia.com.br/assets/images/_/recipes/6eccc5f88058bf142bab64f34639e3d63af6e3e5.webp' WHERE Cod_receitas = 9;
 
- -- Mousse de Maracuj�
+ -- Mousse de Maracujá
 UPDATE Receitas SET Foto_receita = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbRq24boqSmWDlEh9TDV4UCnZ5rfUKe34FetE3nLbhtC6CQS2xM2Nks53H&s=10' WHERE Cod_receitas = 10;
 
  -- Guacamole Tradicional
@@ -243,7 +263,7 @@ UPDATE Receitas SET Foto_receita = 'https://i.panelinha.com.br/i1/bk-6619-guacam
  -- Misto Quente
 UPDATE Receitas SET Foto_receita = 'https://guiadacozinha.com.br/wp-content/uploads/2015/01/misto-quente-gratinado.jpg' WHERE Cod_receitas = 12;
 
- -- Batata Saut�
+ -- Batata Sauté
 UPDATE Receitas SET Foto_receita = 'https://msabores.com/wp-content/uploads/2025/09/Batata-Saute-Dourada.webp' WHERE Cod_receitas = 13;
 
  -- Smoothie de Banana e Cacau
@@ -251,7 +271,7 @@ UPDATE Receitas SET Foto_receita = 'https://encrypted-tbn0.gstatic.com/images?q=
 
  -- Arroz de Forno Cremoso
 UPDATE Receitas SET Foto_receita = 'https://sabores-new.s3.amazonaws.com/public/2025/02/arroz-de-forno-cremoso.jpg' WHERE Cod_receitas = 15;
---#endregion
+
 
 --#region Inserção Categorias ára as receitas.
  -- Associa��o das Receitas com suas Categoria(s) correspondentes
@@ -284,19 +304,7 @@ INSERT INTO Receitas_Categorias (Cod_Receita, Cod_Categoria) VALUES
   (15, 1); -- Arroz de Forno Cremoso -> Massas
 --#endregion
 
---#region Inserção de Usuários Comuns (IDs 4 a 13)
-INSERT INTO Usuario (Nome_completo, Idade, Gmail, Senha, Restricoes_alimentares, funcao) VALUES
-('Carlos Eduardo', '1995/03/10', 'carlos@gmail.com', '123456', '[]', 'Usuario'),
-('Mariana Silva', '1998/07/25', 'mariana@gmail.com', '123456', '[]', 'Usuario'),
-('Lucas Mendes', '2001/11/12', 'lucas@gmail.com', '123456', '[]', 'Usuario'),
-('Fernanda Costa', '1992/05/18', 'fernanda@gmail.com', '123456', '[]', 'Usuario'),
-('Rafael Oliveira', '1990/09/01', 'rafael@gmail.com', '123456', '[]', 'Usuario'),
-('Beatriz Lima', '2003/02/14', 'beatriz@gmail.com', '123456', '[]', 'Usuario'),
-('Gabriel Santos', '1997/12/30', 'gabriel@gmail.com', '123456', '[]', 'Usuario'),
-('Juliana Rocha', '1994/08/08', 'juliana@gmail.com', '123456', '[]', 'Usuario'),
-('Thiago Martins', '1989/04/05', 'thiago@gmail.com', '123456', '[]', 'Usuario'),
-('Camila Alves', '2000/10/20', 'camila@gmail.com', '123456', '[]', 'Usuario');
---#endregion
+
 
 --#region Inserção de Avaliações nas Receitas (1 a 15)
 INSERT INTO Comentarios (Cod_user, Cod_receitas, Nota, Status_Comentarios) VALUES
@@ -365,6 +373,7 @@ select * from Favoritos
 select * from Livros    
 SELECT * FROM Livro_Receitas;
 select * from Receitas_Categorias
+select * from Notificacoes
 
 SELECT COLUMN_NAME
 FROM INFORMATION_SCHEMA.COLUMNS

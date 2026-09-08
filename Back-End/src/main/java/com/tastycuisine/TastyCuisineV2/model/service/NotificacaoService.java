@@ -1,10 +1,13 @@
 package com.tastycuisine.TastyCuisineV2.model.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.tastycuisine.TastyCuisineV2.model.dto.NotificacaoRequestDTO;
 import com.tastycuisine.TastyCuisineV2.model.entity.Notificacao;
@@ -75,5 +78,23 @@ public class NotificacaoService {
         notificacao.setStatusNotificacao("EM_ANALISE");
 
         return notificacaoRepository.save(notificacao);
+    }
+
+    @GetMapping
+    public List<Notificacao> getAll(){
+        return notificacaoRepository.findAll();
+    }
+
+    @GetMapping
+    public Notificacao findById(Long codNotificacao){
+        return notificacaoRepository.findById(codNotificacao).orElseThrow(() -> new RuntimeException("Livro não encontrado com o código " + codNotificacao));
+    }
+
+    @DeleteMapping
+    public void Deletar(Long codNotificacao){
+        Notificacao toDel = findById((codNotificacao));
+        if(toDel != null){
+            notificacaoRepository.delete(toDel);
+        }
     }
 }
