@@ -52,14 +52,14 @@ public class UsuarioService {
         if (usuario.getGmail() != null && !usuario.getGmail().isBlank()) {
             usuarioExistente.setGmail(usuario.getGmail());
         }
- 
+
         LocalDate hoje = LocalDate.now(); // pega o dia de hoje
-        Period periodo = Period.between(usuario.getIdade(), hoje); //compara a data de nascimento 
+        Period periodo = Period.between(usuario.getIdade(), hoje); // compara a data de nascimento
         int idade = periodo.getYears(); // pega os anos
         if (idade >= 14) {
             usuarioExistente.setIdade(usuario.getIdade());
         }
-        
+
         if (usuario.getSenha() != null && !usuario.getSenha().isBlank()) {
             usuarioExistente.setSenha(passwordEncoder.encode(usuario.getSenha()));
         }
@@ -67,10 +67,10 @@ public class UsuarioService {
             usuarioExistente.setRestricoesAlimentares(usuario.getRestricoesAlimentares());
         }
 
-        if(usuario.getFotoPerfil() != null){
+        if (usuario.getFotoPerfil() != null) {
             usuarioExistente.setFotoPerfil(usuario.getFotoPerfil());
         }
-        System.out.println("do negocio la: "+usuario.getFotoPerfil());
+        System.out.println("do negocio la: " + usuario.getFotoPerfil());
         return usuarioRepository.save(usuarioExistente);
     }
 
@@ -109,7 +109,7 @@ public class UsuarioService {
         if ("INATIVO".equals(usuario.getStatus_Usuario())) {
             throw new RuntimeException("CONTA_INATIVA");
         }
-        return usuario; 
+        return usuario;
     }
 
     // reativar conta com senha
@@ -131,6 +131,12 @@ public class UsuarioService {
             existente.setBloqueado((byte) 0);
         } else
             existente.setBloqueado((byte) 1);
+        return usuarioRepository.save(existente);
+    }
+
+    public Usuario SetBloqueado(Long codUser, byte Stat) {
+        Usuario existente = findById(codUser);
+         existente.setBloqueado(Stat);
         return usuarioRepository.save(existente);
     }
 }

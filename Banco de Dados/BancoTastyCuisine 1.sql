@@ -81,6 +81,21 @@ CREATE TABLE Receitas_Categorias(
     FOREIGN KEY (Cod_Categoria) REFERENCES Categorias(Cod_Categoria)
 )
 
+CREATE TABLE Notificacoes (
+    Cod_notificacao BIGINT IDENTITY(1,1) PRIMARY KEY,
+    Cod_user INT NULL,                -- Usuário/Chefe afetado
+    Cod_receita INT NULL,             -- Receita afetada (se for o caso)
+    Tipo_Entidade NVARCHAR(20) NOT NULL, -- 'USUARIO', 'CHEFE' ou 'RECEITA'
+    Motivo NVARCHAR(100) NOT NULL,     -- Pré-pronto ou o valor do "Outro"
+    Descricao NVARCHAR(MAX) NOT NULL,  -- Explicação do Admin
+    Resposta_Usuario NVARCHAR(MAX) NULL, -- Contestação do Usuário
+    Data_Envio DATETIME DEFAULT GETDATE(),
+    Status_Notificacao NVARCHAR(20) DEFAULT 'PENDENTE', -- 'PENDENTE', 'EM_ANALISE', 'RESOLVIDO'
+    
+    FOREIGN KEY (Cod_user) REFERENCES Usuario(Cod_user),
+    FOREIGN KEY (Cod_receita) REFERENCES Receitas(Cod_receitas)
+);
+
 GO
 INSERT INTO Categorias (Nome_Categoria, Grupo) VALUES 
   ('Massas', 'neutro'),
