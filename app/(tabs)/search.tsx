@@ -23,14 +23,64 @@ const CARD_WIDTH = (SCREEN_WIDTH - 20 * 2 - 12) / 2;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const getRecipeName = (r: any) => r.nomeReceita ?? r.name ?? '';
-const getRecipeChef = (r: any) => r.nome_completo ?? r.usuario?.nome_completo ?? r.chef ?? '';
+const getRecipeChef = (r: any) => r.nome_completo ?? r.usuario?.nome_completo ?? r.chefe?.nomeCompleto ?? r.chef ?? 'Anônimo';
 const getRecipeImage = (r: any) => r.fotoReceita || 'https://worldfoodtour.co.uk/wp-content/uploads/2013/06/neptune-placeholder-48.jpg';
-const getRecipeTime = (r: any) => r.prepareTime ?? r.tempoPreparo ?? '';
-const getRecipeId = (r: any) => String(r.codReceitas ?? r.id ?? '');
-const getRecipeRating = (r: any) => parseFloat(r.avaliacao ?? r.rating ?? '0').toFixed(1);
+const getRecipeTime = (r: any) => r.prepareTime ?? r.tempoPreparo ?? '15 min';
+const getRecipeId = (r: any) => Number(r.codReceitas ?? r.id ?? 0);
+
+// Componente para renderizar o Card de Receita com avaliação dinâmica
+function SearchRecipeCard({ item, onPress }: { item: any; onPress: () => void }) {
+  const { getMediaReceita, favoritos, toggleFavorito } = useAuth();
+  const [rating, setRating] = useState<string>('...');
+
+  const recipeId = getRecipeId(item);
+  const isFav = favoritos.some((f: any) => String(f.receita?.codReceitas ?? f.codReceitas) === String(recipeId));
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchRating() {
+      if (recipeId > 0) {
+        const data = await getMediaReceita(recipeId);
+        if (isMounted) {
+          const media = data?.mediaNota ?? 0;
+          setRating(media > 0 ? media.toFixed(1) : '0.0');
+        }
+      }
+    }
+    fetchRating();
+    return () => { isMounted = false; };
+  }, [item]);
+
+  const handleLike = async () => {
+    await toggleFavorito(String(recipeId), recipeId);
+  };
+
+  return (
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
+      <Image source={{ uri: getRecipeImage(item) }} style={styles.cardImg} resizeMode="cover" />
+      <View style={styles.ratingPill}>
+        <Ionicons name="star" size={10} color="#FFD700" />
+        <Text style={styles.ratingText}>{rating}</Text>
+      </View>
+
+      <TouchableOpacity style={styles.heartPill} onPress={handleLike} activeOpacity={0.7}>
+        <Ionicons name={isFav ? 'heart' : 'heart-outline'} size={16} color={C.heartActive} />
+      </TouchableOpacity>
+
+      <View style={styles.cardInfo}>
+        <Text style={styles.cardName} numberOfLines={2}>{getRecipeName(item)}</Text>
+        <Text style={styles.cardChef} numberOfLines={1}>por {getRecipeChef(item)}</Text>
+        <View style={styles.timePill}>
+          <Ionicons name="time-outline" size={11} color={C.textSub} />
+          <Text style={styles.timeText}>{getRecipeTime(item)}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
 
 export default function SearchScreen() {
-  const { recipes, loading, userId, favoritos, toggleFavorito } = useAuth();
+  const { recipes, loading, userId } = useAuth();
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,9 +94,14 @@ export default function SearchScreen() {
 
     if (!recipes) return;
 
-    const activeRecipes = recipes.filter(
-      r => (r.status_Receita ?? r.status ?? '').toUpperCase() !== 'INATIVADO'
-    );
+    // Filtra receitas e chefs inativos/bloqueados
+    const activeRecipes = recipes.filter((r) => {
+      const statusReceita = String(r.status_Receita ?? r.status ?? '').toUpperCase();
+      const statusUsuario = String(r.usuario?.statusUsuario ?? r.usuario?.status ?? '').toUpperCase();
+
+      return statusReceita !== 'INATIVADO' && statusReceita !== 'BLOQUEADO' &&
+             statusUsuario !== 'INATIVADO' && statusUsuario !== 'BLOQUEADO';
+    });
 
     if (searchQuery.trim() === '') {
       setFilteredRecipes(activeRecipes);
@@ -63,8 +118,8 @@ export default function SearchScreen() {
     }
   }, [searchQuery, recipes, loading, userId]);
 
-  const handlePressDish = (id: string) => {
-    router.push({ pathname: '/Sobpo/[id]', params: { id } });
+  const handlePressDish = (id: number) => {
+    router.push({ pathname: '/Sobpo/[id]', params: { id: String(id) } });
   };
 
   if (loading) return <BolinhaqGira />;
@@ -109,38 +164,12 @@ export default function SearchScreen() {
               <View key={i} style={styles.row}>
                 {pair.map(item => {
                   const rId = getRecipeId(item);
-                  const isFav = favoritos.some((f: any) => String(f.receita?.codReceitas ?? f.codReceitas) === String(rId));
-
                   return (
-                    <TouchableOpacity
+                    <SearchRecipeCard
                       key={rId}
-                      style={styles.card}
+                      item={item}
                       onPress={() => handlePressDish(rId)}
-                      activeOpacity={0.85}
-                    >
-                      <Image source={{ uri: getRecipeImage(item) }} style={styles.cardImg} resizeMode="cover" />
-                      <View style={styles.ratingPill}>
-                        <Ionicons name="star" size={10} color="#FFD700" />
-                        <Text style={styles.ratingText}>{getRecipeRating(item)}</Text>
-                      </View>
-
-                      <TouchableOpacity
-                        style={styles.heartPill}
-                        onPress={() => toggleFavorito(rId, Number(rId))}
-                        activeOpacity={0.7}
-                      >
-                        <Ionicons name={isFav ? 'heart' : 'heart-outline'} size={16} color={C.heartActive} />
-                      </TouchableOpacity>
-
-                      <View style={styles.cardInfo}>
-                        <Text style={styles.cardName} numberOfLines={2}>{getRecipeName(item)}</Text>
-                        <Text style={styles.cardChef} numberOfLines={1}>por {getRecipeChef(item)}</Text>
-                        <View style={styles.timePill}>
-                          <Ionicons name="time-outline" size={11} color={C.textSub} />
-                          <Text style={styles.timeText}>{getRecipeTime(item)}</Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
+                    />
                   );
                 })}
                 {pair.length === 1 && <View style={{ width: CARD_WIDTH }} />}

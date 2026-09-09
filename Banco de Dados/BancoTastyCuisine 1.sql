@@ -117,9 +117,9 @@ INSERT INTO Categorias (Nome_Categoria, Grupo) VALUES
   
 INSERT INTO Usuario (Nome_completo, Gmail, Idade, Senha, Funcao, Foto_perfil, Bloqueado)
 VALUES 
-('Erick Jacquin', 'jacquin@tastycuisine.com', '1964/12/09', 'senha123', 'Chefe', 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400', 0),
-('Helena Rizzo', 'helena@tastycuisine.com', '1978/05/22', 'senha123', 'Chefe', 'https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=400', 0),
-('Paola Carosella', 'paola@tastycuisine.com', '1972/10/30', 'senha123', 'Chefe', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400', 0)
+('Erick Jacquin', 'jacquin@tastycuisine.com', '1964/12/09', 'senha123', 'Chefe', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq0EQRgQnlPa2o-qTLJ9l54HkbcQGtRyHAGU38LCRjvZ3pqeGSxC7xo7UnhPLrRkQMSwqtBfAbn-Nkg2WJftdWQ3cFdy0Ya89vnAs8D9EVbA&s=10', 0),
+('Helena Rizzo', 'helena@tastycuisine.com', '1978/05/22', 'senha123', 'Chefe', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-7sPA9JFOrZB5w01eVL4zbB3l-ETnblbuds28DBftFw9FQi6U_6mHRdnCmjb5Py8NoL3zaUrhnxxevOJj9n1huNT_vFoha6GwpvL3-c56&s=10', 0),
+('Paola Carosella', 'paola@tastycuisine.com', '1972/10/30', 'senha123', 'Chefe', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHJeufjAei_kpHDleD6BSyi5LwZGpEzs_N7PDPAt2zc3IjcIlu4NFPgEhzvQB_XoKdXHe_ytRtiA4NFzYvQRek_qUeBk-_H8kecDtAHb3Luw&s=10', 0)
 
 
 --#region Inserção de Usuários Comuns (IDs 4 a 13)
