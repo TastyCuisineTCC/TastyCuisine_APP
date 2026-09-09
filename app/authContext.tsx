@@ -60,6 +60,7 @@ interface AuthContextType {
   logout: () => void;
   getMediaReceita: (receitaId: number) => Promise<MediaResponse>;
   EditPhoto: (id: number,link:string) => Promise<any>;
+  enviarContestacao: (codNotificacao: number, resposta: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -89,6 +90,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     carregarUsuario();
   }, []);
+
+  async function enviarContestacao(codNotificacao: number, resposta: string) {
+    try {
+      const response = await fetch(`http://localhost:8080/notificacoes/${codNotificacao}/contestar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resposta }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao enviar contestação');
+      }
+
+      return { ok: true };
+    } catch (err: any) {
+      console.error('Erro ao contestar:', err);
+      return { ok: false, error: err.message || 'Erro de rede ao enviar contestação' };
+    }
+  }
 
   const login = async (email: string, senha: string) => {
     try {
@@ -216,7 +236,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  
 
   async function getComentariosByUser(userId: string) {
     try {
@@ -393,6 +412,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       updateUser,
       getMediaReceita,
       EditPhoto,
+      enviarContestacao,
     }}>
       {children}
     </AuthContext.Provider>

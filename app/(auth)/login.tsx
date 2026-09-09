@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Linking,
   Modal,
@@ -40,7 +41,7 @@ const C = {
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login, reativar } = useAuth();
+  const { login, reativar, enviarContestacao } = useAuth();
 
   const [formData, setFormData] = useState({ email: '', senha: '' });
   const [rememberMe, setRememberMe] = useState(false);
@@ -48,13 +49,16 @@ export default function LoginScreen() {
   const [contaInativa, setContaInativa] = useState(false);
   const [contaBloqueada, setContaBloqueada] = useState(false);
 
+  const [dadosBloqueio, setDadosBloqueio] = useState<any>(null);
+  const [respostaContestacao, setRespostaContestacao] = useState('');
+  const [enviandoContestacao, setEnviandoContestacao] = useState(false);
+
   const [reativando, setReativando] = useState(false);
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Validação de formato de Email
   const validateEmail = (email: string) => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
@@ -85,6 +89,22 @@ export default function LoginScreen() {
       if (result.ok) {
         router.replace('/home');
       } else if (result.error === 'CONTA_BLOQUEADA') {
+        // Busca a notificação para mostrar o motivo e capturar o ID da notificação
+        try {
+          const resNotif = await fetch('http://localhost:8080/notificacoes/findAll');
+          if (resNotif.ok) {
+            const notifs = await resNotif.json();
+            const listaNotifs = Array.isArray(notifs) ? notifs : (notifs?.content || notifs?.data || []);
+
+            // Filtra pela notificação correspondente ao e-mail informado
+            const minhaNotif = listaNotifs.find((n: any) => n.usuario?.gmail === formData.email.trim());
+            setDadosBloqueio(minhaNotif || null);
+          }
+        } catch (errNotif) {
+          console.error('Erro ao buscar notificacoes:', errNotif);
+          setDadosBloqueio(null);
+        }
+
         setContaBloqueada(true);
       } else if (result.error === 'CONTA_INATIVA') {
         setContaInativa(true);
@@ -98,6 +118,31 @@ export default function LoginScreen() {
       setError('Erro ao conectar com o servidor. Tente novamente.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEnviarContestacao = async () => {
+    if (!respostaContestacao.trim()) {
+      Alert.alert('Atenção', 'Escreva uma mensagem antes de enviar.');
+      return;
+    }
+
+    const codNotificacao = dadosBloqueio?.codNotificacao || dadosBloqueio?.id;
+    if (!codNotificacao) {
+      Alert.alert('Erro', 'Não foi possível identificar o código da notificação de bloqueio.');
+      return;
+    }
+
+    setEnviandoContestacao(true);
+    const res = await enviarContestacao(codNotificacao, respostaContestacao);
+    setEnviandoContestacao(false);
+
+    if (res.ok) {
+      Alert.alert('Sucesso', 'Sua contestação foi enviada para a análise do administrador!');
+      setContaBloqueada(false);
+      setRespostaContestacao('');
+    } else {
+      Alert.alert('Erro', res.error || 'Não foi possível enviar a contestação.');
     }
   };
 
@@ -124,7 +169,7 @@ export default function LoginScreen() {
   };
 
   const handleChange = (name: string, value: string) => {
-    if (error) setError(null); // Limpa o erro ao digitar
+    if (error) setError(null);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -148,7 +193,6 @@ export default function LoginScreen() {
         </LinearGradient>
 
         <View style={styles.card}>
-          {/* TRATAMENTO DE ERROS */}
           {error && (
             <View style={styles.errorContainer}>
               <Ionicons name="alert-circle" size={20} color={C.error} style={{ marginRight: 8 }} />
@@ -196,19 +240,6 @@ export default function LoginScreen() {
             {loading ? <ActivityIndicator color={C.white} /> : <Text style={styles.primaryButtonText}>Entrar</Text>}
           </TouchableOpacity>
 
-
-          {/* Google button */}
-          {/* <View style={styles.dividerContainer}>
-            <View style={styles.line} />
-            <Text style={styles.dividerText}>ou continue com</Text>
-            <View style={styles.line} />
-          </View>
-
-          <TouchableOpacity style={styles.googleButton}>
-            <Image source={require('../../assets/images/google.png')} style={styles.googleIcon} />
-            <Text style={styles.googleText}>Google</Text>
-          </TouchableOpacity> */}
-
           <TouchableOpacity onPress={() => router.push('/register')} style={styles.registerContainer}>
             <Text style={styles.link}>
               Não possui uma conta? <Text style={styles.linkBold}>Cadastre-se</Text>
@@ -216,18 +247,58 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* MODAL BLOQUEADA */}
+        {/* MODAL BLOQUEADA COM CAMPO DE CONTESTAÇÃO */}
         <Modal visible={contaBloqueada} transparent animationType="fade">
           <View style={styles.modalOverlay}>
             <View style={styles.modalBox}>
               <Ionicons name="lock-closed" size={40} color={C.error} style={{ marginBottom: 10 }} />
               <Text style={[styles.modalTitle, { color: C.error }]}>Acesso Suspenso</Text>
-              <Text style={styles.modalDesc}>
-                Esta conta foi bloqueada por um administrador devido à violação das regras da comunidade.
-              </Text>
-              <TouchableOpacity style={[styles.modalButton, { backgroundColor: C.error }]} onPress={() => setContaBloqueada(false)}>
-                <Text style={styles.primaryButtonText}>Confirmar</Text>
-              </TouchableOpacity>
+
+              {/* Detalhes da notificação do bloqueio */}
+              <View style={styles.detailsBox}>
+                <Text style={styles.detailsLabel}>MOTIVO DA SUSPENSÃO:</Text>
+                <Text style={styles.detailsText}>
+                  {dadosBloqueio?.motivo || dadosBloqueio?.Motivo || 'Violação dos termos de uso'}
+                </Text>
+
+                <Text style={[styles.detailsLabel, { marginTop: 8 }]}>OBSERVAÇÃO DO ADMINISTRADOR:</Text>
+                <Text style={styles.detailsDesc}>
+                  {dadosBloqueio?.descricao || dadosBloqueio?.Descricao || 'Nenhuma descrição detalhada informada.'}
+                </Text>
+              </View>
+
+              {/* Campo de Texto para Contestação */}
+              <Text style={styles.contestLabel}>Deseja contestar este bloqueio? Escreva sua mensagem:</Text>
+              <TextInput
+                style={styles.textArea}
+                placeholder="Explique o ocorrido para o administrador..."
+                placeholderTextColor={C.textMuted}
+                multiline
+                numberOfLines={3}
+                value={respostaContestacao}
+                onChangeText={setRespostaContestacao}
+              />
+
+              <View style={styles.modalActionsRow}>
+                <TouchableOpacity
+                  style={[styles.modalSecondaryBtn]}
+                  onPress={() => setContaBloqueada(false)}
+                >
+                  <Text style={styles.modalSecondaryBtnText}>Fechar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.modalPrimaryBtn, enviandoContestacao && { opacity: 0.6 }]}
+                  disabled={enviandoContestacao}
+                  onPress={handleEnviarContestacao}
+                >
+                  {enviandoContestacao ? (
+                    <ActivityIndicator color={C.white} />
+                  ) : (
+                    <Text style={styles.primaryButtonText}>Enviar</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
@@ -283,20 +354,24 @@ const styles = StyleSheet.create({
   optionText: { color: C.textSub, fontSize: 13 },
   primaryButton: { height: 56, borderRadius: 18, backgroundColor: C.accent, justifyContent: 'center', alignItems: 'center', marginTop: 5 },
   primaryButtonText: { color: C.white, fontWeight: '700', fontSize: 16 },
-  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 25 },
-  line: { flex: 1, height: 1, backgroundColor: C.accentBorder },
-  dividerText: { marginHorizontal: 12, color: C.textSub, fontSize: 12 },
-  googleButton: { height: 55, borderRadius: 16, borderWidth: 1, borderColor: C.accentBorder, backgroundColor: C.white, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-  googleIcon: { width: 22, height: 22, marginRight: 10 },
-  googleText: { fontSize: 15, fontWeight: '600', color: C.textPrimary },
   registerContainer: { alignItems: 'center', marginTop: 24 },
   link: { color: C.textSub, fontSize: 14 },
   linkBold: { color: C.accent, fontWeight: '700' },
   errorContainer: { backgroundColor: C.errorBg, borderWidth: 1, borderColor: C.errorBorder, padding: 14, borderRadius: 14, marginBottom: 12, flexDirection: 'row', alignItems: 'center' },
   errorText: { color: C.error, fontSize: 14, flex: 1 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,.45)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 28 },
-  modalBox: { width: '100%', backgroundColor: C.white, borderRadius: 24, padding: 26, alignItems: 'center' },
+  modalBox: { width: '100%', backgroundColor: C.white, borderRadius: 24, padding: 24, alignItems: 'center' },
   modalTitle: { fontSize: 22, fontWeight: '800', color: C.accent, marginBottom: 12 },
   modalDesc: { fontSize: 14, color: C.textSub, textAlign: 'center', lineHeight: 22, marginBottom: 20 },
   modalButton: { width: '100%', height: 52, borderRadius: 16, backgroundColor: C.accent, justifyContent: 'center', alignItems: 'center', marginTop: 10 },
+  detailsBox: { width: '100%', backgroundColor: '#F8FAFC', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', marginBottom: 12 },
+  detailsLabel: { fontSize: 11, fontWeight: '700', color: '#64748B' },
+  detailsText: { fontSize: 14, fontWeight: '600', color: '#1E293B', marginTop: 2 },
+  detailsDesc: { fontSize: 13, color: '#334155', marginTop: 2 },
+  contestLabel: { fontSize: 12, fontWeight: '700', color: C.textPrimary, alignSelf: 'flex-start', marginBottom: 6 },
+  textArea: { width: '100%', height: 80, backgroundColor: C.accentSoft, borderRadius: 12, borderWidth: 1, borderColor: C.accentBorder, padding: 12, textAlignVertical: 'top', color: C.textPrimary, fontSize: 13, marginBottom: 16 },
+  modalActionsRow: { flexDirection: 'row', justifyContent: 'flex-end', width: '100%', gap: 10 },
+  modalSecondaryBtn: { paddingVertical: 12, paddingHorizontal: 18, backgroundColor: '#E2E8F0', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  modalSecondaryBtnText: { color: '#475569', fontWeight: '700', fontSize: 14 },
+  modalPrimaryBtn: { flex: 1, height: 46, backgroundColor: '#0284C7', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
 });
