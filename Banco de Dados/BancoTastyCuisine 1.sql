@@ -109,9 +109,9 @@ INSERT INTO Categorias (Nome_Categoria, Grupo) VALUES
   ('Vegetariana', 'vegetariano'),
   ('Vegana', 'vegano'),
   ('Bebidas e Drinks', 'neutro'),
-  ('Caf� da Manh�', 'neutro'),
-  ('P�es e Bolos', 'neutro'),
-  ('Fitness e Saud�vel', 'neutro'),
+  ('Café da Manhã', 'neutro'),
+  ('Pães e Bolos', 'neutro'),
+  ('Fitness e Saudável', 'neutro'),
   ('Molhos e Acompanhamentos', 'neutro');
 
   
@@ -309,7 +309,7 @@ INSERT INTO Receitas_Categorias (Cod_Receita, Cod_Categoria) VALUES
 --#region Inserção de Avaliações nas Receitas (1 a 15)
 INSERT INTO Comentarios (Cod_user, Cod_receitas, Nota, Status_Comentarios) VALUES
 -- Receita 1: Bolo de Cenoura (5 avaliações)
-(4, 1, 5, 'ATIVO'), (5, 1, 4, 'ATIVO'), (6, 1, 5, 'ATIVO'), (7, 1, 5, 'ATIVO'), (8, 1, 4, 'ATIVO'),
+(4, 1, 2, 'ATIVO'), (5, 1, 1, 'ATIVO'), (6, 1, 2, 'ATIVO'), (7, 1, 1, 'ATIVO'), (8, 1, 4, 'ATIVO'),
 
 -- Receita 2: Panqueca de Banana (5 avaliações)
 (4, 2, 4, 'ATIVO'), (6, 2, 3, 'ATIVO'), (8, 2, 5, 'ATIVO'), (10, 2, 4, 'ATIVO'), (12, 2, 5, 'ATIVO'),
@@ -318,7 +318,7 @@ INSERT INTO Comentarios (Cod_user, Cod_receitas, Nota, Status_Comentarios) VALUE
 (5, 3, 5, 'ATIVO'), (7, 3, 4, 'ATIVO'), (9, 3, 4, 'ATIVO'), (11, 3, 3, 'ATIVO'), (13, 3, 5, 'ATIVO'),
 
 -- Receita 4: Salada Ceasar Simples (5 avaliações)
-(4, 4, 3, 'ATIVO'), (5, 4, 4, 'ATIVO'), (8, 4, 5, 'ATIVO'), (9, 4, 4, 'ATIVO'), (10, 4, 5, 'ATIVO'),
+(4, 4, 3, 'ATIVO'), (5, 4, 2, 'ATIVO'), (8, 4, 5, 'ATIVO'), (9, 4, 4, 'ATIVO'), (10, 4, 2, 'ATIVO'),
 
 -- Receita 5: Sopa de Legumes (5 avaliações)
 (6, 5, 4, 'ATIVO'), (7, 5, 5, 'ATIVO'), (11, 5, 4, 'ATIVO'), (12, 5, 3, 'ATIVO'), (13, 5, 4, 'ATIVO'),
@@ -327,7 +327,7 @@ INSERT INTO Comentarios (Cod_user, Cod_receitas, Nota, Status_Comentarios) VALUE
 (4, 6, 5, 'ATIVO'), (7, 6, 5, 'ATIVO'), (9, 6, 5, 'ATIVO'), (10, 6, 4, 'ATIVO'), (12, 6, 5, 'ATIVO'),
 
 -- Receita 7: Escondidinho de Carne Moída (6 avaliações)
-(5, 7, 5, 'ATIVO'), (6, 7, 5, 'ATIVO'), (8, 7, 4, 'ATIVO'), (9, 7, 5, 'ATIVO'), (11, 7, 5, 'ATIVO'), (13, 7, 4, 'ATIVO'),
+(5, 7, 5, 'ATIVO'), (6, 7, 5, 'ATIVO'), (8, 7, 3, 'ATIVO'), (9, 7, 5, 'ATIVO'), (11, 7, 5, 'ATIVO'), (13, 7, 4, 'ATIVO'),
 
 -- Receita 8: Macarrão ao Alho e Óleo (5 avaliações)
 (4, 8, 4, 'ATIVO'), (5, 8, 3, 'ATIVO'), (7, 8, 5, 'ATIVO'), (10, 8, 4, 'ATIVO'), (13, 8, 5, 'ATIVO'),
@@ -342,13 +342,13 @@ INSERT INTO Comentarios (Cod_user, Cod_receitas, Nota, Status_Comentarios) VALUE
 (6, 11, 4, 'ATIVO'), (9, 11, 5, 'ATIVO'), (11, 11, 3, 'ATIVO'), (12, 11, 4, 'ATIVO'), (13, 11, 5, 'ATIVO'),
 
 -- Receita 12: Misto Quente de Frigideira (5 avaliações)
-(4, 12, 3, 'ATIVO'), (5, 12, 4, 'ATIVO'), (7, 12, 4, 'ATIVO'), (8, 12, 5, 'ATIVO'), (10, 12, 4, 'ATIVO'),
+(4, 12, 1, 'ATIVO'), (5, 12, 4, 'ATIVO'), (7, 12, 1, 'ATIVO'), (8, 12, 1, 'ATIVO'), (10, 12, 4, 'ATIVO'),
 
 -- Receita 13: Batata Sauté (5 avaliações)
 (6, 13, 4, 'ATIVO'), (8, 13, 5, 'ATIVO'), (9, 13, 4, 'ATIVO'), (11, 13, 4, 'ATIVO'), (13, 13, 3, 'ATIVO'),
 
 -- Receita 14: Smoothie de Banana e Cacau (5 avaliações)
-(4, 14, 5, 'ATIVO'), (7, 14, 4, 'ATIVO'), (10, 14, 5, 'ATIVO'), (11, 14, 5, 'ATIVO'), (12, 14, 4, 'ATIVO'),
+(4, 14, 1, 'ATIVO'), (7, 14, 4, 'ATIVO'), (10, 14, 2, 'ATIVO'), (11, 14, 5, 'ATIVO'), (12, 14, 4, 'ATIVO'),
 
 -- Receita 15: Arroz de Forno Cremoso (5 avaliações)
 (5, 15, 4, 'ATIVO'), (6, 15, 5, 'ATIVO'), (8, 15, 4, 'ATIVO'), (9, 15, 5, 'ATIVO'), (13, 15, 4, 'ATIVO');

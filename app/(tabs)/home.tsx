@@ -21,18 +21,24 @@ import { C } from '../constants/colors';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = (SCREEN_WIDTH - 20 * 2 - 12) / 2;
 
-const CATEGORIES = [
-  { key: 'todos',     label: 'Todos',         icon: 'restaurant-outline' },
-  { key: 'doces',     label: 'Doces',         icon: 'ice-cream-outline' },
-  { key: 'salgadas',  label: 'Salgadas',      icon: 'pizza-outline' },
-  { key: 'massas',    label: 'Massas',        icon: 'nutrition-outline' },
-  { key: 'veganas',   label: 'Veganas',       icon: 'leaf-outline' },
-  { key: 'almoco',    label: 'Almoço',        icon: 'sunny-outline' },
-  { key: 'jantar',    label: 'Jantar',        icon: 'moon-outline' },
-  { key: 'cafe',      label: 'Café da manhã', icon: 'cafe-outline' },
-  { key: 'semgluten', label: 'Sem Glúten',    icon: 'ban-outline' },
-  { key: 'semlactose',label: 'Sem Lactose',   icon: 'water-outline' },
-];
+// Ícones padrão para mapear dinamicamente caso queira dar um toque visual legal
+const CATEGORY_ICONS: Record<string, string> = {
+  'Massas': 'nutrition-outline',
+  'Sobremesas': 'ice-cream-outline',
+  'Lanches e Petiscos': 'pizza-outline',
+  'Sopas e Caldos': 'water-outline',
+  'Saladas': 'leaf-outline',
+  'Carnes': 'restaurant-outline',
+  'Aves': 'restaurant-outline',
+  'Peixes e Frutos do Mar': 'fish-outline',
+  'Vegetariana': 'leaf-outline',
+  'Vegana': 'leaf-outline',
+  'Bebidas e Drinks': 'wine-outline',
+  'Café da Manhã': 'cafe-outline',
+  'Pães e Bolos': 'basket-outline',
+  'Fitness e Saudável': 'fitness-outline',
+  'Molhos e Acompanhamentos': 'layers-outline',
+};
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const getRecipeName   = (r: any) => r.nomeReceita ?? r.name ?? '';
@@ -146,9 +152,28 @@ export default function HomeScreen() {
   const { userName, userId, recipes, loading, getMediaReceita, favoritos, toggleFavorito } = useAuth();
   const router = useRouter();
 
+  const [categories, setCategories]         = useState<any[]>([]);
   const [activeIndex, setActiveIndex]       = useState(0);
-  const [activeCategory, setActiveCategory] = useState('todos');
+  const [activeCategory, setActiveCategory] = useState<number | 'todos'>('todos');
   const [carouselRating, setCarouselRating] = useState<string>('...');
+
+  // Buscar categorias da API
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchCategories() {
+      try {
+        const response = await fetch('http://localhost:8080/categoria/findAll');
+        const data = await response.json();
+        if (isMounted && Array.isArray(data)) {
+          setCategories(data);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar categorias da API:', error);
+      }
+    }
+    fetchCategories();
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     if (!userId && !loading) router.push('/login');
@@ -182,12 +207,12 @@ export default function HomeScreen() {
     return !isNaN(min) && min <= 30;
   });
 
+  // Filtragem ajustada utilizando o array de categorias da receita e o ID da categoria selecionada
   const filteredRecipes = activeCategory === 'todos'
     ? recipes
     : recipes.filter(r => {
-        const cat = (r.categoria ?? r.category ?? '').toLowerCase();
-        const label = CATEGORIES.find(c => c.key === activeCategory)?.label.toLowerCase() ?? '';
-        return cat.includes(activeCategory) || cat.includes(label);
+        if (!r.categoria || !Array.isArray(r.categoria)) return false;
+        return r.categoria.some((cat: any) => Number(cat.codCategoria) === Number(activeCategory));
       });
 
   const handlePressDish = (id: string | number) =>
@@ -203,6 +228,10 @@ export default function HomeScreen() {
   const activeFeatured = featuredRecipes[activeIndex];
   const activeFeaturedId = activeFeatured ? getRecipeId(activeFeatured) : 0;
   const isFeaturedFav = favoritos.some((f: any) => String(f.receita?.codReceitas ?? f.codReceitas) === String(activeFeaturedId));
+
+  const activeCategoryName = activeCategory === 'todos'
+    ? 'Para você'
+    : categories.find(c => Number(c.codCategoria) === Number(activeCategory))?.nomeCategoria ?? 'Receitas';
 
   return (
     <SafeAreaView style={s.safeArea}>
@@ -291,26 +320,36 @@ export default function HomeScreen() {
 
         <Text style={[s.eyebrow, { paddingHorizontal: 20, marginTop: 28, marginBottom: 12 }]}>CATEGORIAS</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 8 }}>
-          {CATEGORIES.map(cat => {
-            const active = activeCategory === cat.key;
+          {/* Opção "Todos" */}
+          <TouchableOpacity
+            style={[s.chip, activeCategory === 'todos' && s.chipActive]}
+            onPress={() => setActiveCategory('todos')}
+            activeOpacity={0.75}
+          >
+            <Ionicons name="restaurant-outline" size={14} color={activeCategory === 'todos' ? C.white : C.accent} />
+            <Text style={[s.chipText, activeCategory === 'todos' && s.chipTextActive]}>Todos</Text>
+          </TouchableOpacity>
+
+          {/* Categorias vindas da API */}
+          {categories.map(cat => {
+            const active = activeCategory === cat.codCategoria;
+            const iconName = CATEGORY_ICONS[cat.nomeCategoria] || 'restaurant-outline';
             return (
               <TouchableOpacity
-                key={cat.key}
+                key={cat.codCategoria}
                 style={[s.chip, active && s.chipActive]}
-                onPress={() => setActiveCategory(cat.key)}
+                onPress={() => setActiveCategory(cat.codCategoria)}
                 activeOpacity={0.75}
               >
-                <Ionicons name={cat.icon as any} size={14} color={active ? C.white : C.accent} />
-                <Text style={[s.chipText, active && s.chipTextActive]}>{cat.label}</Text>
+                <Ionicons name={iconName as any} size={14} color={active ? C.white : C.accent} />
+                <Text style={[s.chipText, active && s.chipTextActive]}>{cat.nomeCategoria}</Text>
               </TouchableOpacity>
             );
           })}
         </ScrollView>
 
         <View style={s.sectionHeaderRow2}>
-          <Text style={s.sectionTitle}>
-            {activeCategory === 'todos' ? 'Para você' : CATEGORIES.find(c => c.key === activeCategory)?.label}
-          </Text>
+          <Text style={s.sectionTitle}>{activeCategoryName}</Text>
           <Text style={s.recipeCount}>{filteredRecipes.length} receitas</Text>
         </View>
 

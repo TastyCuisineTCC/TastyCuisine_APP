@@ -296,6 +296,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (res.data) {
       setUser(res.data as AuthUser);
       await AsyncStorage.setItem('userId', String((res.data as AuthUser).codUser));
+      await loadRecipes()
       return { ok: true };
     }
     return { ok: false, error: res.error };
