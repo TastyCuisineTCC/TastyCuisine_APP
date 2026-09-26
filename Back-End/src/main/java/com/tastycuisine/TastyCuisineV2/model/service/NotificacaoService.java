@@ -43,7 +43,7 @@ public class NotificacaoService {
                     .orElseThrow(() -> new RuntimeException("Usuário/Chefe não encontrado com o ID: " + dto.getTargetId()));
             
             // Alterna/Define o bloqueio do usuário (1 para bloqueado)
-            usuario.setBloqueado((byte)1);
+            usuario.setBloqueado(true);
             usuarioRepository.save(usuario);
 
             notificacao.setUsuario(usuario);

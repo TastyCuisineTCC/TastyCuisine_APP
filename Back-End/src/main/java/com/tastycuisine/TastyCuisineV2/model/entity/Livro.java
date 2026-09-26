@@ -37,19 +37,16 @@ public class Livro {
     @Column(name = "Nome_Livro", length = 50, nullable = false)
     @NotBlank
     private String nomeLivro;
-    
+
     @Builder.Default
     @ManyToMany
-    @JoinTable(
-        name = "Livro_Receitas",
-        joinColumns = @JoinColumn(name = "Cod_Livros"),
-        inverseJoinColumns = @JoinColumn(name = "Cod_Receita")
-    )
+    @JoinTable(name = "Livro_Receitas", joinColumns = @JoinColumn(name = "Cod_Livros"), inverseJoinColumns = @JoinColumn(name = "Cod_Receita"))
     private List<Receita> receitas = new ArrayList<>();
-    
-    @Column(name = "Foto_Livro", nullable = true, columnDefinition = "NVARCHAR(MAX)")
+
+    // Em Livro.java
+    @Column(name = "Foto_Livro", columnDefinition = "TEXT")
     private String fotoLivro;
-    
+
     @ManyToOne
     @JoinColumn(name = "Cod_User", nullable = false)
     private Usuario usuario;

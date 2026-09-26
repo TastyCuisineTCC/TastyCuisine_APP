@@ -32,10 +32,10 @@ public class Usuario {
     @Builder.Default
     @Column(name = "Status_Usuario", length = 20, nullable = false)
     private String Status_Usuario = "ATIVO";
-    
+
     @Builder.Default
-    @Column(name = "Bloqueado", length = 1, nullable = false)
-    private byte bloqueado = 0;
+    @Column(name = "Bloqueado", nullable = false)
+    private boolean bloqueado = false;
 
     @Column(name = "nome_completo", length = 300, nullable = false)
     @NotBlank
@@ -52,12 +52,14 @@ public class Usuario {
     @NotBlank
     private String senha;
 
-    @Column(name = "Restricoes_alimentares", nullable = true, columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "Restricoes_alimentares", columnDefinition = "TEXT")
     private String restricoesAlimentares;
 
-    @Column(name = "foto_perfil", nullable = true, columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
 
-    @Column(name = "funcao", nullable = true, columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "funcao", length = 30)
     private String funcao;
+
+    public boolean getBloqueado() {return this.bloqueado;}
 }

@@ -43,42 +43,33 @@ public class Receita {
     @Column(name = "Descricao", length = 250, nullable = false)
     @NotBlank
     private String descricao;
-    
+
     @Builder.Default
-    @Column(name ="Status_Receita", length = 20, nullable = false)
+    @Column(name = "Status_Receita", length = 20, nullable = false)
     private String status_receita = "ATIVO";
 
-    @Column(name = "Modo_preparo", nullable = false, columnDefinition = "NVARCHAR(MAX)")
-    @NotBlank
+    @Column(name = "Modo_preparo", nullable = false, columnDefinition = "TEXT")
     private String modo_preparo;
 
-    @Column(name = "Ingredientes", nullable = false, columnDefinition = "NVARCHAR(MAX)")
-    @NotBlank
+    @Column(name = "Ingredientes", nullable = false, columnDefinition = "TEXT")
     private String ingredientes;
 
     @Column(name = "Restricao", nullable = false)
     private int restricao;
 
-    
     @Builder.Default
     @ManyToMany
-    @JoinTable(
-        name = "Receitas_Categorias",
-        joinColumns = @JoinColumn(name = "Cod_receita"),
-        inverseJoinColumns = @JoinColumn(name = "Cod_Categoria")
-    )
+    @JoinTable(name = "Receitas_Categorias", joinColumns = @JoinColumn(name = "Cod_receita"), inverseJoinColumns = @JoinColumn(name = "Cod_Categoria"))
     private List<Categoria> categoria = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "Cod_usuario", nullable = false)
     private Usuario usuario;
 
-    @JsonProperty("tempoPreparo")
-    @Column(name = "TempoPreparo", nullable = false, columnDefinition = "NVARCHAR(20)")
-    @NotBlank(message = "O tempo de preparo é obrigatório")
+    @Column(name = "TempoPreparo", length = 20, nullable = false)
     private String tempoPreparo;
 
-    @Column(name = "Foto_receita", nullable = true, columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "Foto_receita", columnDefinition = "TEXT")
     private String fotoReceita;
 
     public String getTempoPreparo() {

@@ -127,16 +127,16 @@ public class UsuarioService {
 
     public Usuario bloquear(Long codUser) {
         Usuario existente = findById(codUser);
-        if (existente.getBloqueado() == 1) {
-            existente.setBloqueado((byte) 0);
+        if (existente.getBloqueado()) {
+            existente.setBloqueado(false);
         } else
-            existente.setBloqueado((byte) 1);
+            existente.setBloqueado(true);
         return usuarioRepository.save(existente);
     }
 
     public Usuario SetBloqueado(Long codUser, byte Stat) {
         Usuario existente = findById(codUser);
-         existente.setBloqueado(Stat);
+         existente.setBloqueado(Stat == 1 ? true : false);
         return usuarioRepository.save(existente);
     }
 }
